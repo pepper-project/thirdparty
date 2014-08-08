@@ -1,0 +1,150 @@
+Steps to use to run any CUDA programs 
+
+1. Download and install the following from http://www.nvidia.com/object/cuda_get.html 
+
+  a. The NVIDIA driver
+  b. The CUDA toolkit
+  c. The GPU computing toolkit 
+
+2. Environment variables
+export PATH=/usr/local/cuda/bin:$PATH  
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+-------------------------------------------------------------------------------------------------------------
+
+SSLShader notes (requires a FERMI device for to use 64-bit integers for RSA):
+ a. Update FERMI_DEVICES file with your gpu name or set IS_FERMI=1 in Makefile.in if you have a FERMI device
+ b. make
+ c. ./bin/test_rsa
+
+Test benchmark results:
+
+srinath@fox:~/vercomp/code/thirdparty/libgpucrypto$ ./bin/rsa_test -m CPU
+------------------------------------------
+RSA1024, CPU, random
+------------------------------------------
+# msg	latency	CPU	kernel	throughput(RSA msgs/s)
+   1	0.25	0.25	0.00	3991.23
+   2	0.50	0.50	0.00	3988.33
+   4	1.01	1.01	0.00	3970.01
+   8	2.00	2.00	0.00	4001.63
+  16	4.02	4.02	0.00	3981.05
+  32	8.08	8.08	0.00	3960.06
+  64	16.01	16.01	0.00	3998.71
+ 128	32.05	32.05	0.00	3994.02
+ 256	64.64	64.64	0.00	3960.10
+ 512	128.01	128.01	0.00	3999.82
+1024	256.96	256.96	0.00	3985.09
+correctness check (no batch): OK
+correctness check (no batch, random, iterative): ....................OK
+correctness check (batch, random): ...........OK
+------------------------------------------
+RSA2048, CPU, random
+------------------------------------------
+# msg	latency	CPU	kernel	throughput(RSA msgs/s)
+   1	1.68	1.68	0.00	594.77
+   2	3.34	3.34	0.00	598.87
+   4	6.67	6.67	0.00	599.42
+   8	13.49	13.49	0.00	592.96
+  16	26.74	26.74	0.00	598.27
+  32	53.52	53.52	0.00	597.94
+  64	107.61	107.61	0.00	594.73
+ 128	213.64	213.64	0.00	599.13
+ 256	429.17	429.17	0.00	596.50
+ 512	856.34	856.34	0.00	597.89
+1024	1724.26	1724.26	0.00	593.88
+correctness check (no batch): OK
+correctness check (no batch, random, iterative): ....................OK
+correctness check (batch, random): ...........OK
+------------------------------------------
+RSA4096, CPU, random
+------------------------------------------
+# msg	latency	CPU	kernel	throughput(RSA msgs/s)
+   1	11.38	11.38	0.00	87.87
+   2	22.77	22.77	0.00	87.84
+   4	45.57	45.57	0.00	87.78
+   8	91.54	91.54	0.00	87.40
+  16	182.02	182.02	0.00	87.90
+  32	365.70	365.70	0.00	87.50
+  64	729.27	729.27	0.00	87.76
+ 128	1461.54	1461.54	0.00	87.58
+ 256	2918.38	2918.38	0.00	87.72
+ 512	5838.89	5838.89	0.00	87.69
+1024	11683.38	11683.38	0.00	87.65
+correctness check (no batch): OK
+correctness check (no batch, random, iterative): ....................OK
+correctness check (batch, random): ...........OK
+srinath@fox:~/vercomp/code/thirdparty/libgpucrypto$ ./bin/rsa_test
+Usage: ./bin/rsa_test -m MP,RNS,CPU [-s number of stream (MP-mode only)] 
+srinath@fox:~/vercomp/code/thirdparty/libgpucrypto$ ./bin/rsa_test -m MP
+------------------------------------------
+RSA512, GPU (MP), random
+------------------------------------------
+# msg	latency	CPU	kernel	throughput(RSA msgs/s)
+   1	1.72	1.72	0.00	580.63
+   2	1.80	1.80	0.00	1112.66
+   4	1.89	1.89	0.00	2115.88
+   8	1.98	1.98	0.00	4034.53
+  16	2.00	2.00	0.00	7999.73
+  32	2.05	2.05	0.00	15580.75
+  64	2.18	2.18	0.00	29388.86
+ 128	2.65	2.65	0.00	48232.12
+ 256	5.22	5.22	0.00	49013.49
+ 512	10.31	10.31	0.00	49638.22
+1024	20.32	20.32	0.00	50391.72
+correctness check (no batch): OK
+correctness check (no batch, random, iterative): ....................OK
+correctness check (batch, random): ...........OK
+------------------------------------------
+RSA1024, GPU (MP), random
+------------------------------------------
+# msg	latency	CPU	kernel	throughput(RSA msgs/s)
+   1	5.36	5.36	0.00	186.71
+   2	5.52	5.52	0.00	362.60
+   4	5.65	5.65	0.00	708.29
+   8	5.67	5.67	0.00	1411.73
+  16	5.79	5.79	0.00	2763.48
+  32	6.12	6.12	0.00	5227.32
+  64	7.42	7.42	0.00	8630.87
+ 128	14.67	14.67	0.00	8723.19
+ 256	29.06	29.06	0.00	8808.29
+ 512	57.33	57.33	0.00	8931.25
+1024	112.85	112.85	0.00	9073.75
+correctness check (no batch): OK
+correctness check (no batch, random, iterative): ....................OK
+correctness check (batch, random): ...........OK
+------------------------------------------
+RSA2048, GPU (MP), random
+------------------------------------------
+# msg	latency	CPU	kernel	throughput(RSA msgs/s)
+   1	19.64	19.64	0.00	50.91
+   2	19.90	19.90	0.00	100.49
+   4	19.96	19.96	0.00	200.38
+   8	20.32	20.32	0.00	393.66
+  16	21.53	21.53	0.00	743.22
+  32	26.33	26.33	0.00	1215.17
+  64	52.14	52.14	0.00	1227.45
+ 128	103.10	103.10	0.00	1241.57
+ 256	203.21	203.21	0.00	1259.79
+ 512	399.85	399.85	0.00	1280.47
+1024	791.70	791.70	0.00	1293.42
+correctness check (no batch): OK
+correctness check (no batch, random, iterative): ....................OK
+correctness check (batch, random): ...........OK
+------------------------------------------
+RSA4096, GPU (MP), random
+------------------------------------------
+# msg	latency	CPU	kernel	throughput(RSA msgs/s)
+   1	74.92	74.92	0.00	13.35
+   2	74.93	74.93	0.00	26.69
+   4	76.40	76.40	0.00	52.36
+   8	81.12	81.12	0.00	98.62
+  16	99.53	99.53	0.00	160.75
+  32	197.51	197.51	0.00	162.02
+  64	390.60	390.60	0.00	163.85
+ 128	768.35	768.35	0.00	166.59
+ 256	1512.56	1512.56	0.00	169.25
+ 512	2993.93	2993.93	0.00	171.01
+1024	5948.48	5948.48	0.00	172.14
+correctness check (no batch): OK
+correctness check (no batch, random, iterative): ....................OK
+correctness check (batch, random): ...........OK
