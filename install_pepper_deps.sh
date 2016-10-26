@@ -49,7 +49,7 @@ echo "installing Cheetah template library"
 $TAR Cheetah-2.4.4.tar.gz
 cd Cheetah-2.4.4
 export PYTHONPATH=${DEPS_DIR}/lib/python/:${PYTHONPATH}
-python setup.py install --home $DEPS_DIR
+python2.7 setup.py install --home $DEPS_DIR
 cd $UP
 
 # GMPMEE
